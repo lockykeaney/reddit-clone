@@ -1,6 +1,32 @@
 # Reddit Clone
 
-### MongoDB from docker container
+From the root of the project run `yarn` to install dependencies for all projects
+
+---
+
+## API Server (NOT WORKING)
+
+Express server with a MongoDB backend, running together in a docker orchestration. (Needs Docker installed to run)
+
+`docker-compose up` to build and launch the backend.
+
+---
+
+## Component Library
+
+All components built in isolation using [react-native](https://reactnative.dev/), transpiled for the web with [react-native-web](https://necolas.github.io/react-native-web/).
+
+`yarn components:storybook` to develop the components buy themselves
+
+`yarn components:build` to create the package that so it can be imported and used in the FE
+
+`yarn components:watch` if you need to adjust and tweak the components as they are being used in the FE
+
+Import the components to use from `@packages/components`
+
+---
+
+## MongoDB from docker container
 
 https://medium.com/@szpytfire/setting-up-mongodb-within-a-docker-container-for-local-development-327e32a2b68d
 
