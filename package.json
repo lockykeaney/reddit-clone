@@ -1,0 +1,37 @@
+{
+  "name": "reddit-clone",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "app",
+      "web",
+      "server",
+      "packages/*"
+    ],
+    "nohoist": [
+      "**/typescript-eslint",
+      "**/typescript",
+      "**/prettier",
+      "**/eslint",
+      "**/eslint-config-prettier",
+      "**/eslint-plugin-prettier",
+      "**/eslint-plugin-react",
+      "**/react-native-vector-icons",
+      "**/react-dom",
+      "**/@babel",
+      "**/react-tooltip",
+      "**/react-native-codegen"
+    ]
+  },
+  "scripts": {
+    "web:dev": "yarn workspace web dev",
+    "app:dev": "yarn workspace app start",
+    "server:dev": "yarn workspace server dev",
+    "components:storybook": "yarn workspace @packages/components storybook",
+    "components:build": "yarn workspace @packages/components build",
+    "components:watch": "yarn workspace @packages/components watch"
+  }
+}
