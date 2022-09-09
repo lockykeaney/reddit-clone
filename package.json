@@ -30,6 +30,9 @@
     "web:dev": "yarn workspace web dev",
     "app:dev": "yarn workspace app start",
     "server:dev": "yarn workspace server dev",
+    "server:docker:up": "yarn workspace server docker:up",
+    "server:docker:down": "yarn workspace server docker:down",
+    "server:docker:build": "yarn workspace server docker:build",
     "components:storybook": "yarn workspace @packages/components storybook",
     "components:build": "yarn workspace @packages/components build",
     "components:watch": "yarn workspace @packages/components watch"

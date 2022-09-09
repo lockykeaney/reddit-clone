@@ -1,10 +1,10 @@
-import React, { ReactElement } from "react";
-import { Button as RNButton, StyleSheet } from "react-native";
+import React, { ReactElement } from 'react';
+import { Button as RNButton, StyleSheet } from 'react-native';
 // import type { Button as ButtonType } from 'react-native';
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "red",
+    backgroundColor: 'red',
   },
 });
 
@@ -13,7 +13,7 @@ type ButtonType = {
 };
 
 export const Button: React.FC<ButtonType> = ({
-  color = "blue",
+  color = 'green',
 }): ReactElement => {
   return <RNButton title="Button" color={color} />;
 };

@@ -1,9 +1,14 @@
-FROM node:14-slim
-RUN NODE_OPTIONS=--max_old_space_size=8192
+FROM node:16.15.0-slim
+RUN mkdir -p /usr/src/app/
+WORKDIR /usr/src/app/
+RUN NODE_OPTIONS=--max_old_space_size=16384
 RUN npm install -g nodemon
+
 COPY package.json .
-EXPOSE 4000
 RUN yarn install
+
 COPY . .
-RUN ls -l
-CMD [ "nodemon", "index.js" ]
+
+EXPOSE 4000
+
+CMD [ "yarn", "dev" ]
