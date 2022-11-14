@@ -1,10 +1,20 @@
 import { Schema, model } from 'mongoose';
 
-const Post = new Schema({
+export interface T_Post {
+  content: string;
+  postedByUserId: string;
+  created: Date;
+  updated?: Date;
+  comments: unknown[];
+  upvotes: number;
+  downvotes: number;
+}
+
+const PostSchema = new Schema<T_Post>({
   content: {
     type: String,
   },
-  postedByUser: {
+  postedByUserId: {
     type: String,
   },
   created: {
@@ -28,4 +38,4 @@ const Post = new Schema({
   },
 });
 
-export default model('Post', Post);
+export const PostModel = model<T_Post>('Post', PostSchema);

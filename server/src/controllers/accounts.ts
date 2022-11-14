@@ -39,13 +39,24 @@ export const createNewAccount = async (
 };
 
 export const getAccountList = async (
-  req: RequestWithBody<T_CreateNewAccount>,
+  _: Request | null,
   res: Response
 ): Promise<T_Account[]> => {
   try {
     await AccountModel.find()
       .then((data: T_Account[]) => res.status(200).send(data))
       .catch((error) => console.log('mongoose error: ', error));
+    return;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+export const getAccountById = async (
+  req: RequestWithBody<T_CreateNewAccount>,
+  res: Response
+): Promise<T_Account[]> => {
+  try {
     return;
   } catch (error) {
     throw new Error(error);
