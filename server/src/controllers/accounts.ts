@@ -1,56 +1,52 @@
-import { Router, Request, Response } from 'express';
-import { AccountModel, ProfileModel } from '../models';
+import { Response } from 'express';
+import { AccountModel, T_Account } from '../models';
+import type { RequestWithBody } from '../types';
 
 export type T_CreateNewAccount = {
   loginEmailAdress: string;
   password: string;
-  userName: string;
+  username: string;
 };
-interface RequestWithBody extends Request {
-  body: T_CreateNewAccount;
-}
+
 export const createNewAccount = async (
-  req: RequestWithBody,
+  req: RequestWithBody<T_CreateNewAccount>,
   res: Response
 ): Promise<any> => {
   try {
-    const { loginEmailAdress, userName, password } = req.body;
+    const { loginEmailAdress, username, password } = req.body;
     await AccountModel.findOne({ loginEmailAdress }).then(
-      async (response: any) => {
+      async (response: T_Account) => {
         if (!response) {
           const account = new AccountModel({
             loginEmailAdress,
             password,
+            username,
           });
-          const accountId = await account
+          await account
             .save()
-            .then((dbRes) => {
-              console.log('Created new acccount: ', dbRes);
-              return dbRes._id;
-            })
+            .then((data) => res.status(201).send(data))
             .catch((error) => console.log('mongoose error: ', error));
-          const profile = new ProfileModel({
-            accountId,
-            userName,
-          });
-          await profile
-            .save()
-            .then((dbRes) => {
-              console.log('Created new profile: ', dbRes);
-            })
-            .catch((error) => console.log('mongoose error: ', error));
-          return res
-            .status(200)
-            .json({ message: 'Account and Profile created successfully' });
         } else {
-          return res
-            .status(200)
-            .json({
-              message: 'An account already exists with that email address',
-            });
+          return res.status(400).json({
+            message: 'An account already exists with that email address',
+          });
         }
       }
     );
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+export const getAccountList = async (
+  req: RequestWithBody<T_CreateNewAccount>,
+  res: Response
+): Promise<T_Account[]> => {
+  try {
+    await AccountModel.find()
+      .then((data: T_Account[]) => res.status(200).send(data))
+      .catch((error) => console.log('mongoose error: ', error));
+    return;
   } catch (error) {
     throw new Error(error);
   }

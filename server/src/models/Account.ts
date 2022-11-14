@@ -1,11 +1,12 @@
 import { Schema, model, Document } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
-interface T_Account extends Document {
+export interface T_Account extends Document {
   loginEmailAdress: string;
   password: string;
   dateCreated: Date;
   lastDateActive: Date;
+  username: string;
 }
 
 export const AccountSchema = new Schema<T_Account>({
@@ -25,6 +26,13 @@ export const AccountSchema = new Schema<T_Account>({
   lastDateActive: {
     type: Date,
     default: new Date(),
+  },
+  username: {
+    type: String,
+  },
+  score: {
+    type: Number,
+    default: 0,
   },
 });
 
