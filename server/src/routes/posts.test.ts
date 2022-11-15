@@ -1,4 +1,3 @@
-import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 import supertest from 'supertest';
 import createApp from '../app';
@@ -6,18 +5,19 @@ import { PostModel, T_Post } from '../models';
 import { faker } from '@faker-js/faker';
 
 import { generateAccountList } from '../utils/test/mockDataGenerators';
-
+import {
+  testMongoSetup,
+  testMongoDropDatabase,
+} from '../utils/test/mongoMemoryServer';
 const app = createApp();
 
 describe('Posts Routes', () => {
   beforeAll(async () => {
-    const mongoServer = await MongoMemoryServer.create();
-    await mongoose.connect(mongoServer.getUri());
+    await testMongoSetup();
   });
 
   afterAll(async () => {
-    await mongoose.disconnect();
-    await mongoose.connection.close();
+    await testMongoDropDatabase();
   });
 
   it('[GET] all posts - return 204 if no posts are found ', async () => {
@@ -62,6 +62,8 @@ describe('Posts Routes', () => {
     expect(statusCode).toEqual(200);
     expect(body.postedByUserId).toBe(userId);
     expect(body.content).toBe(content);
+    expect(body.upvotes).toBe(0);
+    expect(body.downvotes).toBe(0);
   });
   it('[GET] single post - return 204 if a post is not found', async () => {
     const { statusCode } = await supertest(app).get(

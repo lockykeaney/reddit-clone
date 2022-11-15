@@ -11,7 +11,7 @@ type LoginProps = {
 export const authControllerLogin = async (
   req: RequestWithBody<LoginProps>,
   res: Response
-): Promise<any> => {
+): Promise<void> => {
   const { username, password } = req.body;
   try {
     await AccountModel.findOne({ username })

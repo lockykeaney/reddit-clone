@@ -3,9 +3,9 @@ import type { RequestWithBody } from '../types';
 import { PostModel, T_Post } from '../models';
 
 export const getAllPosts = async (
-  req: RequestWithBody<any>,
+  req: Request,
   res: Response
-): Promise<any> => {
+): Promise<void> => {
   try {
     await PostModel.find()
       .then((data: T_Post[]) => {
@@ -21,7 +21,7 @@ export const getAllPosts = async (
 export const createNewPost = async (
   req: RequestWithBody<T_Post>,
   res: Response
-): Promise<any> => {
+): Promise<void> => {
   try {
     const { content, postedByUserId } = req.body;
     await new PostModel({
@@ -39,7 +39,7 @@ export const createNewPost = async (
 export const getSinglePost = async (
   req: Request,
   res: Response
-): Promise<any> => {
+): Promise<void> => {
   try {
     const { id } = req.params;
 
