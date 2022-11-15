@@ -1,16 +1,20 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model, Document } from 'mongoose';
 
 export interface T_Post {
   content: string;
   postedByUserId: string;
+}
+
+export type T_PostInput = T_Post;
+export type T_PostReturn = T_Post & {
   created: Date;
-  updated?: Date;
+  updated: Date;
   comments: unknown[];
   upvotes: number;
   downvotes: number;
-}
+} & Document;
 
-const PostSchema = new Schema<T_Post>({
+const PostSchema = new Schema({
   content: {
     type: String,
   },
@@ -27,6 +31,7 @@ const PostSchema = new Schema<T_Post>({
   },
   comments: {
     type: [Object],
+    default: [],
   },
   upvotes: {
     type: Number,
@@ -38,4 +43,4 @@ const PostSchema = new Schema<T_Post>({
   },
 });
 
-export const PostModel = model<T_Post>('Post', PostSchema);
+export const PostModel = model<T_PostReturn>('Post', PostSchema);

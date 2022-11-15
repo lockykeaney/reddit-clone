@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import bcrypt from 'bcryptjs';
-import { AccountModel, T_Account } from '../models';
+import { AccountModel, T_AccountDocumentReturn } from '../models';
 import type { RequestWithBody } from '../types';
 
 type LoginProps = {
@@ -15,7 +15,7 @@ export const authControllerLogin = async (
   const { username, password } = req.body;
   try {
     await AccountModel.findOne({ username })
-      .then((account: T_Account) => {
+      .then((account: T_AccountDocumentReturn) => {
         if (account) {
           bcrypt.compare(password, account.password, (err, match) => {
             if (err) {

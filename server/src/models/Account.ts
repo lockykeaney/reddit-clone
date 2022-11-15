@@ -1,13 +1,15 @@
 import { Schema, model, Document } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
-export interface T_Account extends Document {
+export interface T_Account {
   loginEmailAdress: string;
   password: string;
   dateCreated: Date;
   lastDateActive: Date;
   username: string;
 }
+
+export type T_AccountDocumentReturn = T_Account & Document;
 
 export const AccountSchema = new Schema<T_Account>({
   loginEmailAdress: {

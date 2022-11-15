@@ -39,12 +39,16 @@ export const createNewAccount = async (
 };
 
 export const getAccountList = async (
-  _: Request | null,
+  req: RequestWithBody<any>,
   res: Response
-): Promise<T_Account[]> => {
+): Promise<any> => {
   try {
     await AccountModel.find()
-      .then((data: T_Account[]) => res.status(200).send(data))
+      .then((data: T_Account[]) => {
+        data.length === 0
+          ? res.status(200).send({ message: 'No accounts found' })
+          : res.status(200).send(data);
+      })
       .catch((error) => console.log('mongoose error: ', error));
     return;
   } catch (error) {
