@@ -1,18 +1,20 @@
-import { useState, useEffect } from "react";
-import reactLogo from "./assets/react.svg";
-import "./App.css";
+import { useState, useEffect } from 'react';
+import reactLogo from './assets/react.svg';
+import './App.css';
 
-import { Button, Card, TextInput } from "@packages/components";
+import { Button, Card, TextInput } from '@packages/components';
 
 function App() {
   const [count, setCount] = useState(0);
   const [response, setResponse] = useState<string>();
 
   useEffect(() => {
-    fetch("http://localhost:4000").then((res) => {
-      console.log(res);
-      setResponse("returned");
-    });
+    fetch('http://localhost:4000')
+      .then(res => {
+        setResponse('returned');
+        return res.json();
+      })
+      .then(data => console.log(data));
   }, []);
   return (
     <div className="App">
@@ -23,7 +25,7 @@ function App() {
       </div>
       <h1>Vite + React</h1>
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
+        <button onClick={() => setCount(count => count + 1)}>
           count is {count}
         </button>
         <p>

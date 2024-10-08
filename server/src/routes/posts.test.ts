@@ -27,7 +27,7 @@ describe('Posts Routes', () => {
 
   it('[GET] all posts - return and array of posts', async () => {
     const COUNT = 5;
-    const mockData = generateAccountList(COUNT);
+    const mockData = await generateAccountList(COUNT);
     await PostModel.collection.insertMany(mockData);
     const { body } = await supertest(app).get('/posts/all-posts');
     expect(body.length).toEqual(COUNT);

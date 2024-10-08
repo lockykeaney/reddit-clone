@@ -1,5 +1,7 @@
 # Reddit Clone
 
+Built entirely with JS
+
 From the root of the project run `yarn` to install dependencies for all projects
 
 ---

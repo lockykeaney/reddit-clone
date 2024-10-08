@@ -1,4 +1,4 @@
-FROM node:16.15.0-slim
+FROM node:16-slim
 RUN mkdir -p /usr/src/app/
 WORKDIR /usr/src/app/
 RUN NODE_OPTIONS=--max_old_space_size=16384

@@ -2,7 +2,6 @@ import { generatePosts, seedDatabase } from './mockDataGenerators';
 
 test('Should return a list of account ids', async () => {
   const output = await seedDatabase();
-  console.log(output);
   expect(output.length).toEqual(30);
 });
 
