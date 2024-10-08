@@ -1,5 +1,6 @@
 import { Response } from 'express';
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 import { AccountModel, T_AccountDocumentReturn } from '../models';
 import type { RequestWithBody } from '../types';
 
@@ -23,7 +24,8 @@ export const authControllerLogin = async (
             }
             if (match) {
               account.updateOne({ lastDateActive: new Date() });
-              res.status(201).json(account);
+              const token = jwt.sign(JSON.stringify(account), 'SECRET_TOKEN');
+              res.status(201).json(token);
             } else {
               res.status(400).json({ message: 'Incorrect Password' });
             }

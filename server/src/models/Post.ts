@@ -33,13 +33,9 @@ const PostSchema = new Schema({
     type: [Object],
     default: [],
   },
-  upvotes: {
-    type: Number,
-    default: 0,
-  },
-  downvotes: {
-    type: Number,
-    default: 0,
+  votes: {
+    type: [Object],
+    default: [],
   },
 });
 

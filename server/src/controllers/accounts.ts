@@ -11,7 +11,7 @@ export type T_CreateNewAccount = {
 export const createNewAccount = async (
   req: RequestWithBody<T_CreateNewAccount>,
   res: Response
-): Promise<any> => {
+): Promise<void> => {
   try {
     const { loginEmailAdress, username, password } = req.body;
     await AccountModel.findOne({ loginEmailAdress }).then(
@@ -39,7 +39,7 @@ export const createNewAccount = async (
 };
 
 export const getAccountList = async (
-  req: RequestWithBody<any>,
+  req: Request,
   res: Response
 ): Promise<any> => {
   try {

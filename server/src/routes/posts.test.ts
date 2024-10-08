@@ -62,8 +62,7 @@ describe('Posts Routes', () => {
     expect(statusCode).toEqual(200);
     expect(body.postedByUserId).toBe(userId);
     expect(body.content).toBe(content);
-    expect(body.upvotes).toBe(0);
-    expect(body.downvotes).toBe(0);
+    expect(body.votes.length).toBe(0);
   });
   it('[GET] single post - return 204 if a post is not found', async () => {
     const { statusCode } = await supertest(app).get(

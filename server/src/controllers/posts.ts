@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import type { RequestWithBody } from '../types';
-import { PostModel, T_Post } from '../models';
+import { PostModel, T_Post, VoteModel } from '../models';
 
 export const getAllPosts = async (
   req: Request,
@@ -42,10 +42,20 @@ export const getSinglePost = async (
 ): Promise<void> => {
   try {
     const { id } = req.params;
+    const post = await PostModel.findById(id);
+    const votesForPost = await VoteModel.find({ postId: id });
 
-    await PostModel.findById(id).then((data: T_Post) => {
-      data ? res.status(200).send(data) : res.status(204).send();
-    });
+    const returnValue = {
+      ...post,
+      votes: votesForPost,
+    };
+    (await post)
+      ? res.status(200).send(votesForPost.length > 1 ? returnValue : post)
+      : res.status(204).send();
+    // await PostModel.findById(id).then((data: T_Post) => {
+    //   data ? res.status(200).send(data) : res.status(204).send();
+    // });
+    return;
   } catch (error) {
     throw new Error(error);
   }

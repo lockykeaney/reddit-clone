@@ -3,6 +3,6 @@ import { createNewAccount, getAccountList } from '../controllers';
 
 const router = Router();
 
-router.post('/create', createNewAccount).get('/account-list', getAccountList);
+router.post('/create', createNewAccount);
 
 export default router;
