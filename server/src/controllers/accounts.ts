@@ -1,4 +1,4 @@
-import { Response } from 'express';
+import { Response, Request } from 'express';
 import { AccountModel, T_Account } from '../models';
 import type { RequestWithBody } from '../types';
 
@@ -39,14 +39,14 @@ export const createNewAccount = async (
 };
 
 export const getAccountList = async (
-  req: Request,
+  _: Request,
   res: Response
-): Promise<any> => {
+): Promise<void> => {
   try {
     await AccountModel.find()
       .then((data: T_Account[]) => {
         data.length === 0
-          ? res.status(200).send({ message: 'No accounts found' })
+          ? res.status(204).send({ message: 'No accounts found' })
           : res.status(200).send(data);
       })
       .catch((error) => console.log('mongoose error: ', error));
@@ -57,10 +57,31 @@ export const getAccountList = async (
 };
 
 export const getAccountById = async (
-  req: RequestWithBody<T_CreateNewAccount>,
+  req: Request,
   res: Response
 ): Promise<T_Account[]> => {
   try {
+    const { id } = req.params;
+    const account = await AccountModel.findById(id);
+    account
+      ? res.status(200).send(account)
+      : res.status(200).send({ message: 'No account found' });
+    return;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+export const getAccountUsernameById = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { id } = req.params;
+    const account = await AccountModel.findById(id);
+    account
+      ? res.status(200).send({ username: account.username })
+      : res.status(200).send({ message: 'No account found' });
     return;
   } catch (error) {
     throw new Error(error);

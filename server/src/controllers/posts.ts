@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import type { RequestWithBody } from '../types';
 import { PostModel, T_Post, VoteModel } from '../models';
+import { getAccountUsernameById } from '../controllers';
 
 export const getAllPosts = async (_: Request, res: Response): Promise<void> => {
   try {
@@ -41,6 +42,8 @@ export const getSinglePost = async (
     const { id } = req.params;
     const post = await PostModel.findById(id);
     const votesForPost = await VoteModel.find({ postId: id });
+    // const username = await getAccountUsernameById(req, res);
+    // console.log(username);
 
     const returnValue = {
       ...post,
