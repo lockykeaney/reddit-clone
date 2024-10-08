@@ -64,10 +64,28 @@ describe('Posts Routes', () => {
     expect(body.content).toBe(content);
     expect(body.votes.length).toBe(0);
   });
+
   it('[GET] single post - return 204 if a post is not found', async () => {
     const { statusCode } = await supertest(app).get(
       `/posts/${new mongoose.Types.ObjectId().toString()}`
     );
     expect(statusCode).toEqual(204);
+  });
+
+  it('[PATCH] update a single item', async () => {
+    const userId = new mongoose.Types.ObjectId().toString();
+    const content = faker.lorem.paragraph();
+    const PAYLOAD: T_Post = {
+      content: content,
+      postedByUserId: userId,
+    };
+    const originalPost = await PostModel.collection.insertOne(PAYLOAD);
+    const UPDATE_PAYLOAD: T_Post = {
+      content: 'This has been updated',
+    };
+    const { body: updatedPost } = await supertest(app)
+      .patch(`/posts/${originalPost.insertedId}`)
+      .send(UPDATE_PAYLOAD);
+    expect(updatedPost.content).toBe(UPDATE_PAYLOAD.content);
   });
 });

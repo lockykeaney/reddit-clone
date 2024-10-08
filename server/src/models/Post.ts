@@ -2,7 +2,7 @@ import { Schema, model, Document } from 'mongoose';
 
 export interface T_Post {
   content: string;
-  postedByUserId: string;
+  postedByUserId?: string;
 }
 
 export type T_PostInput = T_Post;

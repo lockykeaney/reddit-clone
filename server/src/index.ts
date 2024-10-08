@@ -6,8 +6,7 @@ import createDatabase from './database';
 
 const PORT = process.env.PORT || 4000;
 
-const start = async () => {
-  console.log('Loading with config: ', process.env);
+const main = async () => {
   try {
     const app = createApp();
     createDatabase();
@@ -18,4 +17,4 @@ const start = async () => {
   }
 };
 
-start();
+main();

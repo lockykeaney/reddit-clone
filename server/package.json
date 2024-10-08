@@ -11,7 +11,7 @@
     "pretty": "prettier --write '**/*.{js,json}' '!node_modules/**'",
     "postpretty": "yarn lint --fix",
     "test": "jest --watch",
-    "seedDatabase": "ts-node ./src/utils/databaseHelpers/seedDatabase",
+    "seedDatabase": "ts-node ./src/utils/databaseHelpers/seedDatabase.ts",
     "docker:up": "docker compose up",
     "docker:down": "docker compose down",
     "docker:build": "docker compose build"
