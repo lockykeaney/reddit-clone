@@ -1,11 +1,32 @@
 import { Request, Response } from 'express';
 import type { RequestWithBody } from '../types';
 import { PostModel, T_Post, VoteModel } from '../models';
-import { getAccountUsernameById } from '../controllers';
 
-export const getAllPosts = async (_: Request, res: Response): Promise<void> => {
+export const getCountOfPosts = async (
+  _: Request,
+  res: Response
+): Promise<void> => {
   try {
-    await PostModel.find()
+    await PostModel.countDocuments()
+      .then((count: number) => {
+        res.json({ count });
+      })
+      .catch((error) => console.log('mongoose error: ', error));
+
+    return;
+  } catch (error) {
+    throw new Error(error);
+  }
+};
+
+export const getListOfPosts = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  try {
+    const { body } = req;
+    const LIMIT = body.limit ? body.limit : 10;
+    await PostModel.find(null, null, { limit: LIMIT })
       .then((data: T_Post[]) => {
         data.length === 0 ? res.status(204).send() : res.status(200).send(data);
       })
@@ -34,7 +55,7 @@ export const createNewPost = async (
   }
 };
 
-export const getSinglePost = async (
+export const getSinglePostById = async (
   req: Request,
   res: Response
 ): Promise<void> => {

@@ -10,8 +10,6 @@ export type T_PostReturn = T_Post & {
   created: Date;
   updated: Date;
   comments: unknown[];
-  upvotes: number;
-  downvotes: number;
 } & Document;
 
 const PostSchema = new Schema({
@@ -30,10 +28,6 @@ const PostSchema = new Schema({
     default: undefined,
   },
   comments: {
-    type: [Object],
-    default: [],
-  },
-  votes: {
     type: [Object],
     default: [],
   },

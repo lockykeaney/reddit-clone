@@ -1,21 +1,30 @@
 import { Router } from 'express';
 
 import {
-  getAllPosts,
+  getListOfPosts,
   createNewPost,
-  getSinglePost,
+  getSinglePostById,
   editSinglePost,
+  getCountOfPosts,
 } from '../controllers';
 
 const router = Router();
+
+export const POSTS_ROUTES = {
+  COUNT: '/posts-count',
+  LIST: '/list',
+  NEW: '/new',
+  BY_ID: '/:id',
+};
 
 router
   .get('/', (_, res) => {
     return res.json({ message: 'Posts endpoint!' });
   })
-  .get('/all-posts', getAllPosts)
-  .post('/new', createNewPost)
-  .get('/:id', getSinglePost)
-  .patch('/:id', editSinglePost);
+  .get(POSTS_ROUTES.COUNT, getCountOfPosts)
+  .post(POSTS_ROUTES.LIST, getListOfPosts)
+  .post(POSTS_ROUTES.NEW, createNewPost)
+  .get(POSTS_ROUTES.BY_ID, getSinglePostById)
+  .patch(POSTS_ROUTES.BY_ID, editSinglePost);
 
 export default router;
