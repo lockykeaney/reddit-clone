@@ -8,6 +8,9 @@ import express, {
 import session from 'express-session';
 import cors from 'cors';
 import morgan from 'morgan';
+import passport from 'passport';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 import router from './routes';
 
@@ -19,12 +22,15 @@ const createApp = (): Application => {
   app.use(morgan('dev'));
   app.use(
     session({
-      secret: 'SECRET_TOKEN',
+      secret: process.env.SECRET_TOKEN,
       saveUninitialized: true,
       resave: false,
     })
   );
-  app.get('/', (req: Request, res: Response) => {
+  app.use(passport.initialize());
+  app.use(passport.session());
+
+  app.get('/', (_: Request, res: Response) => {
     return res.json({ message: 'Root endpoint!' });
   });
 

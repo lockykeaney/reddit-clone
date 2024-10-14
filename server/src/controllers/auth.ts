@@ -25,7 +25,7 @@ export const authControllerLogin = async (
             if (match) {
               account.updateOne({ lastDateActive: new Date() });
               const token = jwt.sign(JSON.stringify(account), 'SECRET_TOKEN');
-              res.status(201).json(token);
+              res.status(200).json({ message: 'user logged in', token });
             } else {
               res.status(400).json({ message: 'Incorrect Password' });
             }
@@ -39,3 +39,11 @@ export const authControllerLogin = async (
     throw new Error(error);
   }
 };
+
+// export const authControllerLogout = async (req: Request, res: Response) => {
+//   try {
+
+//   } catch (error) {
+//     throw new Error(error);
+//   }
+// }

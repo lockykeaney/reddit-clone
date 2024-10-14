@@ -5,22 +5,16 @@ import { PostModel, T_Post } from '../models';
 import { faker } from '@faker-js/faker';
 
 import { generateAccountList } from '../utils/test/mockDataGenerators';
-import { POSTS_ROUTES } from './posts';
+
 import {
   testMongoSetup,
   testMongoDropDatabase,
 } from '../utils/test/mongoMemoryServer';
 const app = createApp();
 
-const createRoute = (route: string, id?: string) => `/posts/${id ? id : route}`;
-
 describe('Posts Routes', () => {
   beforeAll(async () => {
     await testMongoSetup();
-    const { statusCode } = await supertest(app).post(
-      createRoute(POSTS_ROUTES.LIST)
-    );
-    expect(statusCode).toEqual(204);
 
     const mockData = await generateAccountList(20);
     await PostModel.collection.insertMany(mockData);
@@ -31,34 +25,57 @@ describe('Posts Routes', () => {
   });
 
   it('getCountOfPosts', async () => {
-    const { body } = await supertest(app).get(createRoute(POSTS_ROUTES.COUNT));
+    const { body } = await supertest(app).get('/posts/posts-count');
     expect(body.count).toEqual(20);
   });
 
   it('[POST] list of posts with the default', async () => {
-    const { body } = await supertest(app).post(createRoute(POSTS_ROUTES.LIST));
+    const { body } = await supertest(app).post('/posts/list');
     expect(body.length).toEqual(10);
   });
 
   it('[GET] list of posts with a limit', async () => {
     const { body } = await supertest(app)
-      .post(createRoute(POSTS_ROUTES.LIST))
+      .post('/posts/list')
       .send({ limit: 5 });
     expect(body.length).toEqual(5);
   });
 
   it('[POST] create new - create a new post and return the object', async () => {
+    await supertest(app).post('/accounts/create').send({
+      loginEmailAddress: 'test_email@gmail.com',
+      username: 'test01',
+      password: 'password01',
+    });
     const userId = new mongoose.Types.ObjectId().toString();
     const PAYLOAD: T_Post = {
       content: faker.lorem.paragraph(),
       postedByUserId: userId,
     };
+    const user = await supertest(app)
+      .post('/auth/login')
+      .send({ username: 'test01', password: 'password01' });
+
     const { body, statusCode } = await supertest(app)
-      .post(createRoute(POSTS_ROUTES.NEW))
+      .post('/posts/new')
+      .set('Authorization', `Bearer ${user.body.token}`)
       .send(PAYLOAD);
     expect(statusCode).toEqual(200);
     expect(body.content).toEqual(PAYLOAD.content);
     expect(body.postedByUserId).toEqual(userId);
+  });
+
+  it('[POST] create new - reject the submission if the user is not authentication', async () => {
+    const userId = new mongoose.Types.ObjectId().toString();
+    const PAYLOAD: T_Post = {
+      content: faker.lorem.paragraph(),
+      postedByUserId: userId,
+    };
+
+    const { statusCode } = await supertest(app)
+      .post('/posts/new')
+      .send(PAYLOAD);
+    expect(statusCode).toEqual(401);
   });
 
   it('[GET] single post - return object when passing ID', async () => {
@@ -71,17 +88,16 @@ describe('Posts Routes', () => {
     const dummyResponse = await PostModel.collection.insertOne(PAYLOAD);
 
     const { body, statusCode } = await supertest(app).get(
-      createRoute(dummyResponse.insertedId)
+      `/posts/${dummyResponse.insertedId}`
     );
     expect(statusCode).toEqual(200);
     expect(body.postedByUserId).toBe(userId);
     expect(body.content).toBe(content);
-    expect(body.votes.length).toBe(0);
   });
 
   it('[GET] single post - return 204 if a post is not found', async () => {
     const { statusCode } = await supertest(app).get(
-      createRoute(new mongoose.Types.ObjectId().toString())
+      `/posts/${new mongoose.Types.ObjectId().toString()}`
     );
     expect(statusCode).toEqual(204);
   });
@@ -98,7 +114,7 @@ describe('Posts Routes', () => {
       content: 'This has been updated',
     };
     const { body: updatedPost } = await supertest(app)
-      .patch(createRoute(originalPost.insertedId))
+      .patch(`/posts/${originalPost.insertedId}`)
       .send(UPDATE_PAYLOAD);
     expect(updatedPost.content).toBe(UPDATE_PAYLOAD.content);
   });

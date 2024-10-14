@@ -2,7 +2,7 @@ import { Schema, model, Document } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
 export interface T_Account {
-  loginEmailAdress: string;
+  loginEmailAddress: string;
   password: string;
   dateCreated: Date;
   lastDateActive: Date;
@@ -12,7 +12,7 @@ export interface T_Account {
 export type T_AccountDocumentReturn = T_Account & Document;
 
 export const AccountSchema = new Schema<T_Account>({
-  loginEmailAdress: {
+  loginEmailAddress: {
     type: String,
     unique: true,
     required: true,

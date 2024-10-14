@@ -6,7 +6,7 @@ export const generateAccountList = async (
   count: number
 ): Promise<T_Account[]> => {
   return await Array.from({ length: count }, () => ({
-    loginEmailAdress: faker.internet.email(),
+    loginEmailAddress: faker.internet.email(),
     password: faker.internet.password(),
     username: faker.internet.userName(),
     dateCreated: new Date(),

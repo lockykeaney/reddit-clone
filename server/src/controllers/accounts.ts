@@ -3,7 +3,7 @@ import { AccountModel, T_Account } from '../models';
 import type { RequestWithBody } from '../types';
 
 export type T_CreateNewAccount = {
-  loginEmailAdress: string;
+  loginEmailAddress: string;
   password: string;
   username: string;
 };
@@ -13,12 +13,12 @@ export const createNewAccount = async (
   res: Response
 ): Promise<void> => {
   try {
-    const { loginEmailAdress, username, password } = req.body;
-    await AccountModel.findOne({ loginEmailAdress }).then(
+    const { loginEmailAddress, username, password } = req.body;
+    await AccountModel.findOne({ loginEmailAddress }).then(
       async (response: T_Account) => {
         if (!response) {
           const account = new AccountModel({
-            loginEmailAdress,
+            loginEmailAddress,
             password,
             username,
           });
