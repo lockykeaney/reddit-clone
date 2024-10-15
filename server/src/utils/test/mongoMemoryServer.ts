@@ -6,6 +6,7 @@ import { seed } from '../seed';
 let memoryServer: MongoMemoryServer;
 
 export const testMongoSetup = async (): Promise<void> => {
+  console.log('= Starting test server =');
   const mongoServer = await MongoMemoryServer.create();
   await mongoose.connect(mongoServer.getUri());
 
@@ -16,6 +17,7 @@ export const testMongoSetup = async (): Promise<void> => {
 
 export const testMongoDropDatabase = async (): Promise<void> => {
   if (memoryServer) {
+    console.log('= Stopping test server =');
     await mongoose.connection.dropDatabase();
     await mongoose.connection.close();
     await memoryServer.stop();

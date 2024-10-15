@@ -12,6 +12,7 @@ const app = createApp();
 
 describe('Posts Routes', () => {
   beforeAll(async () => {
+    jest.useFakeTimers();
     await testMongoSetup();
   });
 
