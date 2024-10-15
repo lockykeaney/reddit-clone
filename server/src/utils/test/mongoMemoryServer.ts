@@ -1,12 +1,17 @@
 import mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 
+import { seed } from '../seed';
+
 let memoryServer: MongoMemoryServer;
 
 export const testMongoSetup = async (): Promise<void> => {
   const mongoServer = await MongoMemoryServer.create();
   await mongoose.connect(mongoServer.getUri());
+
   memoryServer = mongoServer;
+
+  await seed();
 };
 
 export const testMongoDropDatabase = async (): Promise<void> => {

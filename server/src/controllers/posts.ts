@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import type { RequestWithBody } from '../types';
+import type { RequestWithUser } from '../types';
 import { PostModel, T_Post, VoteModel } from '../models';
 
 export const getCountOfPosts = async (
@@ -38,15 +38,16 @@ export const getListOfPosts = async (
 };
 
 export const createNewPost = async (
-  req: RequestWithBody<T_Post>,
+  req: RequestWithUser,
   res: Response
 ): Promise<void> => {
   try {
-    const { content, postedByUserId } = req.body;
-    await new PostModel({
+    const { content } = req.body;
+    const post = await new PostModel({
       content,
-      postedByUserId,
-    })
+      postedByUserId: req.user.id,
+    });
+    post
       .save()
       .then((data) => res.status(200).send(data))
       .catch((error) => console.log('mongoose error: ', error));
@@ -63,8 +64,6 @@ export const getSinglePostById = async (
     const { id } = req.params;
     const post = await PostModel.findById(id);
     const votesForPost = await VoteModel.find({ postId: id });
-    // const username = await getAccountUsernameById(req, res);
-    // console.log(username);
 
     const returnValue = {
       ...post,
@@ -80,15 +79,21 @@ export const getSinglePostById = async (
 };
 
 export const editSinglePost = async (
-  req: Request,
+  req: RequestWithUser,
   res: Response
 ): Promise<void> => {
   try {
     const { id } = req.params;
-    const post = await PostModel.findByIdAndUpdate(id, req.body, {
-      new: true,
+    // const post = await PostModel.findByIdAndUpdate(id, req.body, {
+    //   new: true,
+    // });
+    await PostModel.findById(id).then((data) => {
+      if (data.postedByUserId !== req.user.id) {
+        res.status(401);
+      }
+      res.status(200).send(data);
     });
-    res.status(200).send(post);
+
     return;
   } catch (error) {
     throw new Error(error);

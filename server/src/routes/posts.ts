@@ -31,6 +31,10 @@ router
     createNewPost
   )
   .get(POSTS_ROUTES.BY_ID, getSinglePostById)
-  .patch(POSTS_ROUTES.BY_ID, editSinglePost);
+  .patch(
+    POSTS_ROUTES.BY_ID,
+    passport.authenticate('jwt', { session: false }),
+    editSinglePost
+  );
 
 export default router;

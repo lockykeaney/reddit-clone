@@ -8,8 +8,8 @@ const PORT = process.env.PORT || 4000;
 
 const main = async () => {
   try {
-    const app = createApp();
-    createDatabase();
+    const app = await createApp();
+    await createDatabase();
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   } catch (error) {
     console.error(error);

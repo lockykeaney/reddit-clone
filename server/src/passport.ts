@@ -1,5 +1,5 @@
 import passport from 'passport';
-import { ExtractJwt, Strategy } from 'passport-jwt';
+import { ExtractJwt, Strategy as JwtStrategy } from 'passport-jwt';
 import { AccountModel } from './models';
 import * as dotenv from 'dotenv';
 dotenv.config();
@@ -10,12 +10,17 @@ const opts = {
 };
 
 passport.use(
-  new Strategy(opts, async (payload, done) => {
+  new JwtStrategy(opts, async (payload, done) => {
     try {
-      const user = AccountModel.findById(payload.id);
-      if (user) return done(null, user);
+      const user = await AccountModel.findById(payload._id);
+      if (user) {
+        console.log('user === ', user);
+        return done(null, user);
+      } else {
+        return done(null, false);
+      }
     } catch (error) {
-      return done(error);
+      return done(error, false);
     }
   })
 );

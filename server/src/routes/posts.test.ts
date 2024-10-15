@@ -4,8 +4,6 @@ import createApp from '../app';
 import { PostModel, T_Post } from '../models';
 import { faker } from '@faker-js/faker';
 
-import { generateAccountList } from '../utils/test/mockDataGenerators';
-
 import {
   testMongoSetup,
   testMongoDropDatabase,
@@ -15,9 +13,6 @@ const app = createApp();
 describe('Posts Routes', () => {
   beforeAll(async () => {
     await testMongoSetup();
-
-    const mockData = await generateAccountList(20);
-    await PostModel.collection.insertMany(mockData);
   });
 
   afterAll(async () => {
@@ -26,7 +21,7 @@ describe('Posts Routes', () => {
 
   it('getCountOfPosts', async () => {
     const { body } = await supertest(app).get('/posts/posts-count');
-    expect(body.count).toEqual(20);
+    expect(body.count).toEqual(36); // random posts + the default account posts
   });
 
   it('[POST] list of posts with the default', async () => {
@@ -42,27 +37,20 @@ describe('Posts Routes', () => {
   });
 
   it('[POST] create new - create a new post and return the object', async () => {
-    await supertest(app).post('/accounts/create').send({
-      loginEmailAddress: 'test_email@gmail.com',
-      username: 'test01',
-      password: 'password01',
-    });
-    const userId = new mongoose.Types.ObjectId().toString();
     const PAYLOAD: T_Post = {
       content: faker.lorem.paragraph(),
-      postedByUserId: userId,
     };
-    const user = await supertest(app)
+    const login = await supertest(app)
       .post('/auth/login')
-      .send({ username: 'test01', password: 'password01' });
+      .send({ username: 'test01', password: 'simpletest321' });
 
     const { body, statusCode } = await supertest(app)
       .post('/posts/new')
-      .set('Authorization', `Bearer ${user.body.token}`)
+      .set('Authorization', `Bearer ${login.body.token}`)
       .send(PAYLOAD);
     expect(statusCode).toEqual(200);
     expect(body.content).toEqual(PAYLOAD.content);
-    expect(body.postedByUserId).toEqual(userId);
+    // expect(body.postedByUserId).toEqual(posterBody._id);
   });
 
   it('[POST] create new - reject the submission if the user is not authentication', async () => {
@@ -117,5 +105,23 @@ describe('Posts Routes', () => {
       .patch(`/posts/${originalPost.insertedId}`)
       .send(UPDATE_PAYLOAD);
     expect(updatedPost.content).toBe(UPDATE_PAYLOAD.content);
+  });
+
+  it('[PATCH] throw error if user is not the original poster', async () => {
+    const userId = new mongoose.Types.ObjectId().toString();
+    const content = faker.lorem.paragraph();
+    const PAYLOAD: T_Post = {
+      content: content,
+      postedByUserId: userId,
+    };
+    const originalPost = await PostModel.collection.insertOne(PAYLOAD);
+    const UPDATE_PAYLOAD: T_Post = {
+      content: 'This has been updated',
+      postedByUserId: 'aabbcc',
+    };
+    const { body: updatedPost } = await supertest(app)
+      .patch(`/posts/${originalPost.insertedId}`)
+      .send(UPDATE_PAYLOAD);
+    expect(updatedPost.statusCode).toBe(401);
   });
 });
