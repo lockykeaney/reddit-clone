@@ -14,7 +14,6 @@ passport.use(
     try {
       const user = await AccountModel.findById(payload._id);
       if (user) {
-        console.log('user === ', user);
         return done(null, user);
       } else {
         return done(null, false);
